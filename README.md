@@ -3,7 +3,7 @@
 ---
 - 디자인패턴이란?
 - 디자인패턴의 종류
-- 디자인패턴 조사(Prototype Pattern, Bridge Pattern)
+- 디자인패턴 조사(Prototype Pattern, Bridge Pattern, Command Pattern, Singleton Pattern)
 - 참조
 
 ---
@@ -208,12 +208,129 @@ hyeon := Person{"alex", &Address{"Seoul", 1234},}
 ---
 
 ### 2. (Bridge Pattern)
+#### 장점
+구현을 인터페이스에 완전히 결합시키지 않았기 때문에 구현과 추상화된 부분을 분리시킬 수 있다.
+추상화된 부분과 실제 구현 부분을 독립적으로 확장 할 수 있다.
+추상화된 부분을 구현한 구상 클래스를 바꿔도 클라이언트 쪽에는 영향을 끼치지 않는다.
+코드의 단위 테스트
+Bridge 패턴은 독립적인 테스트가 용이
+Bridge 패턴을 사용하지 않는다면, 구현 클래스를 테스트 하기 위해 슈퍼클래스가 필요
+구현 클래스의 모의 객체를 만들어, 추상 클래스를 테스트  
 
-### 3.
+#### 단점
+여러 플랫폼에서 사용해야 할 그래픽스 및 윈도우 처리 시스템에서 유용하게 쓰인다.
+인터페이스와 실제 구현부를 서로 다른 방식으로 변경해야 하는 경우에 유용하게 쓰인다.
+디자인이 복잡해진다는 단점이 있다.  
 
-### 4.
+#### 예시
+Bridge 패턴은 두 구현체 간의 결합을 제거하기 위해 (decoupling) 사용되는 패턴입니다.
+
+이 패턴의 예제로 컴퓨터와 프린트기의 예제가 많이 사용됩니다.
+
+mac과 windows 컴퓨터가 있고 삼성 프린트기와 HP 프린트기가 있다고 가정해봅시다.
+
+컴퓨터의 종류가 2가지고 프린트기의 종류가 2가지이므로 제일 단순한 방법은 2*2=4 
+즉, 4개의 구조체를 만드는 것입니다.  
+```
+type MacWithSamsungPrinter struct {}
+ 
+type MacWithHpPrinter struct {}
+ 
+type WindowWithSamsungPrinter struct {}
+ 
+type WindowWithHpPrinter struct {}
+
+```
+이렇게 생성시에는 상당히 번거럽고 유연하지가 않다  
+
+
+```
+type printer interface {
+    printFile()
+}
+ 
+ 
+type computer interface {
+    print()
+    setPrint(print)
+}
+
+```
+인터페이스를 2개 만들어 준후
+
+```
+type samsungPrinter struct {}
+ 
+func (p *samsungPrinter) printFile() {
+    fmt.Println("Printing by a samsung..")
+}
+ 
+type hpPrinter struct {}
+ 
+func (p *HpPrinter) printFile() {
+    fmt.Println("Printing by a hp..")
+}
+```
+그럼 삼성 프린트기와 HP 프린트기는 위처럼 나타낼 수 있습니다.
+
+```
+type mac struct {
+    printer printer
+}
+ 
+func (m *mac) print() {
+    fmt.Println("Print in mac")
+    m.printer.printFile()
+}
+ 
+func (m *mac) setPrinter(p printer) {
+    m.printer = p
+}
+ 
+ 
+ 
+type windows struct {
+    printer printer
+}
+ 
+func (w *windows) print() {
+    fmt.Println("Print in windows")
+    w.printer.printFile()
+}
+ 
+func (w *windows) setPrinter(p printer) {
+    w.printer = p
+}
+```
+mac과 windows는 위처럼 나타낼 수 있습니다.  
+중요한 점은 mac과 windows 구조체는 필드에 printer 인터페이스 타입을 가지고 있습니다.  
+그렇기 때문에 프린트기를 동작시킬 수 있으며 printer의 인터페이스 타입만 만족시킨다면 어떤 프린트기든 동작시킬 수 있습니다.  
+
+
+### 3. (Command Pattern)
+요청을 객체의 형태로 캡슐화하여(실행될 기능을 캡슐화함으로써) 사용자가 보낸 요청을 나중에 이용할 수 있도록 매서드 이름, 매개변수 등 요청에 필요한 정보를 저장 또는 로깅, 취소할 수 있게 하는 패턴이다
+커맨드 패턴에는 명령(command), 수신자(receiver), 발동자(invoker), 클라이언트(client)의 네개의 용어가 항상 따른다.
+
+#### 장점
+커맨드 패턴을 활용하게 요청부와 동작부를 분리시켜주기 때문에 시스템의 결합도를 낮출 수 있으며, 각 객체들이 수정되어도 다른 객체가 영향을 받지 않습니다.
+클라이언트와 INVOKER 클래스 간의 의존성이 제거 된다.  
+#### 단점 
+리시버 및 리시버의 동작이 추가된다면 그 동작에 대한 클래스를 만들어야 하기 때문에, 다소 많은 잡다한 클래스들이 추가된다는 단점이 있습니다.  
+
+### 4. (Singleton Pattern)
+싱글톤 패턴은 단 하나의 인스턴스를 생성해 사용하는 디자인 패턴이다.
+
+#### 장점
+고정된 메모리 영역을 얻으면서 한번의 new로 인스턴스를 사용하기 때문에 메모리 낭비를 방지할 수 있음
+또한 싱글톤으로 만들어진 클래스의 인스턴스는 전역 인스턴스이기 때문에 다른 클래스의 인스턴스들이 데이터를 공유하기 쉽다.
+DBCP(DataBase Connection Pool)처럼 공통된 객체를 여러개 생성해서 사용해야하는 상황에서 많이 사용.
+
+#### 단점
+싱글톤 인스턴스가 너무 많은 일을 하거나 많은 데이터를 공유시킬 경우 다른 클래스의 인스턴스들 간에 결합도가 높아져 "개방-폐쇄 원칙" 을 위배하게 된다. (=객체 지향 설계 원칙에 어긋남)
+따라서 수정이 어려워지고 테스트하기 어려워진다.
 
 ---
 ## 참조
 [웹 개발자가 알아야할 7가지 디자인 패턴](https://sangcho.tistory.com/entry/%EC%9B%B9%EA%B0%9C%EB%B0%9C%EC%9E%90%EA%B0%80%EC%95%8C%EC%95%84%EC%95%BC%ED%95%A07%EA%B0%80%EC%A7%80%EB%94%94%EC%9E%90%EC%9D%B8%ED%8C%A8%ED%84%B4)  
-[생성패턴 구조패턴 행위패턴](https://velog.io/@ha0kim/Design-Pattern-%EC%83%9D%EC%84%B1-%ED%8C%A8%ED%84%B4Creational-Patterns)    
+[생성패턴 구조패턴 행위패턴](https://velog.io/@ha0kim/Design-Pattern-%EC%83%9D%EC%84%B1-%ED%8C%A8%ED%84%B4Creational-Patterns)   
+[기본기를 쌓는 코딩 블로그](https://jeong-pro.tistory.com)  
