@@ -136,6 +136,76 @@
 ---
 ## 디자인 패턴 조사
 ### 1. (Prototype Pattern)
+프로토타입 패턴은 원형이 되는 인스턴스를 사용해 새롭게 생성할 객체의 종류를 명시하여 새로운 객체가 생성될 시점에 인스턴스의 타입이 결정되도록 하는 패턴입니다.
+
+#### 적용 가능한 경우
+코드가 복사해야 하는 구현 클래스에 의존하지 않아야 하는 경우 프로토타입 패턴을 사용할 수 있습니다.
+이 경우는 코드가 인터페이스를 통해 써드파티 코드와 함께 작동할 경우 많이 발생합니다.
+객체를 초기화 하는 방식만 다를뿐 서브클래스의 수를 줄이려는 경우 프로토타입 패넡을 사용할 수 있습니다.
+
+#### 장점
+구현 클래스에 직접 연결하지 않고 객체를 복사할 수 있습니다.
+프로토타입이 미리 정의되어 있기 때문에 중복되는 초기화 코드를 제거할 수 있습니다.
+복잡한 오브젝트를 보다 편리하게 만들수 있습니다.
+
+#### 단점
+순환 참조가 있는 복잡한 객체를 복제하는 것은 매우 까다로울 수 있습니다.
+
+#### 예제
+prototype 패턴은 매번 객체를 새로 생성하기보다는 original 객체를 복사해서 필요한 부분만 수정해서 사용하는 패턴이다.
+1. 복제할 객체 생성 프로세스가 복잡할 때 프로토타입 패턴을 사용
+2. 새 인스턴스를 처음부터 만드는 대신 개체의 복사본이 만들어 지므로 데이터베이스 작업과 같은 새로운 개체를 생성하는 동안 관련된 비용이 드는 작업 방지  
+
+```
+type Address struct {
+	City          string
+	AddressNumber uint
+}
+
+type Person struct {
+	Name    string
+	Address *Address
+}
+
+```
+이러한 구조체를 만들었을때  
+```
+alex := Person{"alex", &Address{"Seoul", 1234}}
+
+	sarah := alex
+	sarah.Address.City = "Busan"
+	fmt.Println(alex.Address)  // Busan
+	fmt.Println(sarah.Address) // Busan
+ 
+```
+위처럼 코드 작성시에 Address 포인터 타입이기 때문에 alex의 주소도 Busan으로 바뀌어 버립니다.  
+
+```
+func (p *Person) DeepCopy() *Person {
+	buf := bytes.Buffer{}
+	e := gob.NewEncoder(&buf)
+	_ = e.Encode(p)
+
+	decoder := gob.NewDecoder(&buf)
+	result := Person{}
+	_ = decoder.Decode(&result)
+
+	return &result 
+```
+여러가지 방법이 있겠지만 gob 패키지를 이용하는 방법으로 예시를 들자면
+encoding과 decoding 과정을 거치게되면 포인터 형태로 이루어진 구조체도 deepcopy가 가능합니다.  
+```
+hyeon := Person{"alex", &Address{"Seoul", 1234},}
+
+	geun := hyeon.DeepCopy()
+	geun.Address.City = "Busan"
+	fmt.Println(hyeon.Address) // Seoul
+	fmt.Println(geun.Address)  // Busan
+
+```
+위 코드를 보면 deepcopy가 되어서 geun의 주소는 여전히 seoul로 확인 할 수 있습니다.
+
+---
 
 ### 2. (Bridge Pattern)
 
