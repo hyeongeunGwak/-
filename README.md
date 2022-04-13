@@ -354,13 +354,11 @@ type MakePizzaCommand struct {
 }
 
 func (c *MakePizzaCommand) execute() {
-	// Reduce the total clean dishes of the restaurant
-	// and print a message once done
 	c.restaurant.CleanedDishes -= c.n
 	fmt.Println("made", c.n, "pizzas")
 }
 
-// The MakeSaladCommand is similar to the MakePizza command
+// MakePizza와 똑같은 설정
 type MakeSaladCommand struct {
 	n          int
 	restaurant *Restaurant
@@ -376,14 +374,97 @@ type CleanDishesCommand struct {
 }
 
 func (c *CleanDishesCommand) execute() {
-	// Reset the cleaned dishes to the total dishes
-	// present, and print a message once done
 	c.restaurant.CleanedDishes = c.restaurant.TotalDishes
 	fmt.Println("dishes cleaned")
 }
 ```
 레스토랑에 대한 세 가지 작업은 각각 명령으로 나타낼 수 있습니다. 레스토랑과 세 가지 명령을 구성하는 방법을 살펴보겠습니다.
 
+```
+func (r *Restaurant) MakePizza(n int) Command {
+	return &MakePizzaCommand{
+		restaurant: r,
+		n:          n,
+	}
+}
+
+func (r *Restaurant) MakeSalad(n int) Command {
+	return &MakeSaladCommand{
+		restaurant: r,
+		n:          n,
+	}
+}
+
+func (r *Restaurant) CleanDishes() Command {
+	return &CleanDishesCommand{
+		restaurant: r,
+	}
+}
+```
+이제 Restaurant다음 명령의 인스턴스를 만들기 위해 에 메서드를 추가할 수 있습니다.
+
+```
+// 쿡은 속성으로 명령 목록과 함께 제공하게 구조체 설정
+type Cook struct {
+	Commands []Command
+}
+
+// 하나씩 모든 명령을 실행
+func (c *Cook) executeCommands() {
+	for _, c := range c.Commands {
+		c.execute()
+	}
+}
+```
+명령이 생성되면 execute메서드를 호출하여 실행할 수 있습니다. 이것은 간단해 보일 수 있지만 여러 개의 다른 명령을 실행해야 할 때 큰 가치가 있습니다.  
+이를 보여주기 위해 레스토랑에 요리사를 추가해 보겠습니다. 레스토랑이 Cook집행자로서 명령을 수락하고 차례로 실행합니다.  
+```
+func main() {
+	r := NewResteraunt()
+
+	// 실행할 작업 목록 생성
+	tasks := []Command{
+		r.MakePizza(2),
+		r.MakeSalad(1),
+		r.MakePizza(3),
+		r.CleanDishes(),
+		r.MakePizza(4),
+		r.CleanDishes(),
+	}
+
+	// 작업을 실행할 cooks 생성
+	cooks := []*Cook{
+		&Cook{},
+		&Cook{},
+	}
+
+	// 기존 작업을 반복하면서 요리사에게 할당
+	for i, task := range tasks {
+		cook := cooks[i%len(cooks)]
+		cook.Commands = append(cook.Commands, task)
+	}
+
+	// 모든 요리사가 호출받으면 다음 커맨드를 실행할 수 있습니다.
+	for i, c := range cooks {
+		fmt.Println("cook", i, ":")
+		c.executeCommands()
+	}
+}
+```
+이 세 가지 엔티티를 사용하여 각 요리사가 레스토랑에서 각자의 명령을 실행하도록 작업 대기열을 구성할 수 있습니다.  
+```
+cook 0 :
+made 2 pizzas
+made 3 pizzas
+made 4 pizzas
+cook 1 :
+made 1 salads
+dishes cleaned
+dishes cleaned
+```
+출력값
+명령 패턴은 작업을 실행해야 하지만 작업 관리를 작업 자체의 실행과 분리하려는 경우에 유용합니다. 
+공통 인터페이스에서 각 작업을 캡슐화하여 작업에서 실행자(요리사)를 분리했습니다.   
 ### 4. (Singleton Pattern)
 싱글톤 패턴은 단 하나의 인스턴스를 생성해 사용하는 디자인 패턴이다.
 
