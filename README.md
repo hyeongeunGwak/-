@@ -76,27 +76,27 @@
 
 #### 구조패턴 종류
 
-어댑터 패턴(Adapter Pattern)
+어댑터 패턴(Adapter Pattern)</br>
 : 인터페이스가 호환되지 않는 클래스들을 함께 이용할 수 있도록, 타 클래스의 인터페이스를 기존 인터페이스에 덧씌운다.
-
-브리지 패턴(Bridge Pattern)
+</br>
+브리지 패턴(Bridge Pattern)</br>
 : 추상화와 구현을 분리해 둘을 각각 따로 발전시킬 수 있다.
-
-합성 패턴(Composite pattern)
+</br>
+합성 패턴(Composite pattern)</br>
 : 0개, 1개 혹은 그 이상의 객체를 묶어 하나의 객체로 이용할 수 있다.
-
-데코레이터 패턴(Decorator Pattern)
+</br>
+데코레이터 패턴(Decorator Pattern)</br>
 : 기존 객체의 매서드에 새로운 행동을 추가하거나 오버라이드 할 수 있다.
-
-퍼사드 패턴(Facade Pattern)
+</br>
+퍼사드 패턴(Facade Pattern)</br>
 : 많은 분량의 코드에 접근할 수 있는 단순한 인터페이스를 제공한다.
-
-플라이웨이트 패턴(Flyweight Pattern)
+</br>
+플라이웨이트 패턴(Flyweight Pattern)</br>
 : 다수의 유사한 객체를 생성·조작하는 비용을 절감할 수 있다.
-
-프록시 패턴(Proxy Pattern)
+</br>
+프록시 패턴(Proxy Pattern)</br>
 : 접근 조절, 비용 절감, 복잡도 감소를 위해 접근이 힘든 객체에 대한 대역을 제공한다.
-
+</br>
 ---
 
 ### 행동패턴(Behavioral Patterns)
