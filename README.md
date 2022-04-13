@@ -11,18 +11,7 @@
 
 디자인 패턴이란 기존 환경 내에서 반복적으로 일어나는 문제들을 어떻게 풀어나갈 것인가에 대한 일종의 솔루션 같은 것입니다. 디자인 패턴 계의 교과서로 불리는 [GoF의 디자인패턴]에서는 객체지향적 디자인 패턴의 카테고리를 "**생성 패턴(Creational Pattern)**", "**구조 패턴(Structural Pattern)**", "**행동 패턴(Behavioral Pattern)**" 3가지로 구분하고 있습니다.
 
- 
-
-**생성(Creational)패턴**	**구조(Structural)패턴** **행동(Behavioral)패턴**
-      Singleton	                Adapter	            Command
-   Abstract Factory	          Composite	          Interpreter
-    Factory Method	          Decorator	            Iterator
-      Builder	                  Facade	             Mediator
-     Prototype	               Flyweight	           Memento
-                                Proxy	               Observer
-                                                      State
-                                                     Strategy
-                                                 Template Method
+ ![pattern](https://user-images.githubusercontent.com/97214187/163108956-0f014826-a261-4e3a-a9b8-71e56a9971ee.png)
 
 
 디자인 패턴은 설계자로 하여금 재사용이 가능한 설계는 선택하고, 재사용을 방해하는 설계는 배제하도록 도와줍니다. 또한 패턴을 쓰면 이미 만든 시스템의 유지보수나 문서화도 개선할 수 있고, 클래스의 명세도 정확하게 할 수 있으며, 객체 간의 상호작용 또는 설계 의도까지 명확하게 정의할 수 있습니다. 간단하게 말해서 디자인 패턴은 설계자들이 "**올바른**" 설계를 "**빨리**" 만들 수 있도록 도와줍니다.
