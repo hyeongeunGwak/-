@@ -317,6 +317,73 @@ mac과 windows는 위처럼 나타낼 수 있습니다.
 #### 단점 
 리시버 및 리시버의 동작이 추가된다면 그 동작에 대한 클래스를 만들어야 하기 때문에, 다소 많은 잡다한 클래스들이 추가된다는 단점이 있습니다.  
 
+#### 예제
+Go에서 명령 패턴을 설명하는 예를 살펴보겠습니다.
+일정 수의 요리사가 있는 레스토랑과 주방에 접시가 있다고 가정해 보겠습니다. 각 요리사는 한 번에 다음 작업 중 하나를 수행할 수 있습니다.
+- 피자 요리하기
+- 샐러드 만들기
+- 설거지 하기 피자나 샐러드를 만들 때마다 접시는 다 소진됩니다. 설거지를 하면 전체 설거지 개수가 초기화됩니다.
+```
+type Command interface {
+	execute()
+}
+```
+명령 패턴을 구현하기 위한 기본 단위는 명령 인터페이스입니다.  
+```
+// 총접시랑 총청소 포함 구조체
+type Restaurant struct {
+	TotalDishes   int
+	CleanedDishes int
+}
+
+// 10가지 요리로 새로운 레스토랑 만들기
+func NewResteraunt() *Restaurant {
+	const totalDishes = 10
+	return &Restaurant{
+		TotalDishes:   totalDishes,
+		CleanedDishes: totalDishes,
+	}
+}
+
+// 피자만들기 구조체
+// the number of pizzas to make, as well as the
+// restaurant as its attributes
+type MakePizzaCommand struct {
+	n          int
+	restaurant *Restaurant
+}
+
+func (c *MakePizzaCommand) execute() {
+	// Reduce the total clean dishes of the restaurant
+	// and print a message once done
+	c.restaurant.CleanedDishes -= c.n
+	fmt.Println("made", c.n, "pizzas")
+}
+
+// The MakeSaladCommand is similar to the MakePizza command
+type MakeSaladCommand struct {
+	n          int
+	restaurant *Restaurant
+}
+
+func (c *MakeSaladCommand) execute() {
+	c.restaurant.CleanedDishes -= c.n
+	fmt.Println("made", c.n, "salads")
+}
+
+type CleanDishesCommand struct {
+	restaurant *Restaurant
+}
+
+func (c *CleanDishesCommand) execute() {
+	// Reset the cleaned dishes to the total dishes
+	// present, and print a message once done
+	c.restaurant.CleanedDishes = c.restaurant.TotalDishes
+	fmt.Println("dishes cleaned")
+}
+```
+레스토랑에 대한 세 가지 작업은 각각 명령으로 나타낼 수 있습니다. 레스토랑과 세 가지 명령을 구성하는 방법을 살펴보겠습니다.
+
 ### 4. (Singleton Pattern)
 싱글톤 패턴은 단 하나의 인스턴스를 생성해 사용하는 디자인 패턴이다.
 
@@ -328,6 +395,97 @@ DBCP(DataBase Connection Pool)처럼 공통된 객체를 여러개 생성해서 
 #### 단점
 싱글톤 인스턴스가 너무 많은 일을 하거나 많은 데이터를 공유시킬 경우 다른 클래스의 인스턴스들 간에 결합도가 높아져 "개방-폐쇄 원칙" 을 위배하게 된다. (=객체 지향 설계 원칙에 어긋남)
 따라서 수정이 어려워지고 테스트하기 어려워진다.
+
+#### 예제
+Singleton 패턴은 특정 객체가 프로그램 실행중에 딱 한번만 생성되고 모두 같은 객체를 사용할 때 쓰입니다.  
+대표적으로 데이터베이스 관련 객체를 Singleton으로 많이 만듭니다.
+```
+type singletonDB struct {
+   info map[string]int
+}
+ 
+var once sync.Once
+var db *singletonDB
+ 
+func GetDB() *singletonDB {
+    once.Do(func() {
+        // db 초기화 작업
+    })
+    return db
+}
+```
+
+sync.Once를 활용하면 한번만 실행되는 코드를 만들 수 있습니다.  
+즉, GetDB함수를 호출하면 최초 호출시에만 once.Do 함수의 인자로 들어간 함수가 실행이 될테고  
+이 함수는 db 변수에 데이터베이스 관련 객체를 저장할 것입니다.  
+그 이후에는 GetDB함수를 호출하면 db는 nil 값이 아닐테고 데이터베이스 정보가 들어있는 db 변수만 return 하게 됩니다.  
+이러한 Singleton 패턴은 단점이 있습니다.  
+```
+var db *singletonDB
+ 
+func (sb *singletonDB) GetValue(name string) int {
+    return sb.info[name]
+}
+ 
+func GetTotalValue(names... string) int {
+    tot := 0
+    for _, name := range names {
+        tot += GetDB().GetValue(name)
+    }
+    return tot
+}
+```
+위와 같은 코드가 추가되었다고 하면
+
+```
+tot := GetTotalValue("kim", "alex")
+ok := tot == (1 + 2)
+fmt.Println(ok)
+```
+이러한 코드의 문제점은
+1. 유닛테스트를 하고싶어도 우선 DB에 접속하는게 잘 이루어져야한다는 가정이 있어야합니다.
+또한, DB의 실제 데이터에 의존하게 됩니다. 즉, 통합테스트가 되어버립니다.  
+2. 현재 GetTotal함수는 GetDB에 의존하므로 SOLID의 원칙중 하나인 DIP를 위반하게 됩니다.
+(interface를 통한 추상화에 의존하게 만들어야 합니다.)  
+
+```
+type DB interface {
+    GetValue(name string) int
+}
+```
+이렇게 interface를 하나 추가하면 GetTotalValue 함수를 다음과 같이 바꿀 수 있습니다.
+
+```
+func GetTotalValue(db DB, names... string) int {
+    tot := 0
+    for _, name := range names {
+        tot += db.GetValue(name)
+    }
+    return tot
+}
+
+type DummyDB struct {
+    dummyData map[string]int
+}
+ 
+func (d *DummyDB) GetValue(name string) int {
+    if len(d.dummyData) == 0 {
+        d.dummyData = map[string]int {
+            "kim": 1,
+            "alex": 2,
+        }
+    }
+    return d.dummyData[name]
+}
+```
+이렇게 통합테스트가 아닌 유닛테스트를 위한 DummyDB 구조체를 만들고
+위에서 정의한 interface에 따르기 위해 GetValue 메서드를 추가해줍니다.  
+
+```
+tot := GetTotalValue(&DummyDB{}, "alex", "kim")
+fmt.Println(tot == 3)
+```
+interface에 의해 DummyDB도 인자로 들어갈 수 있으므로 위와 같은 테스트코드를 작성할 수 있습니다.  
 
 ---
 ## 참조
