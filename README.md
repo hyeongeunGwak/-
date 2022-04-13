@@ -3,7 +3,7 @@
 ---
 - 디자인패턴이란?
 - 디자인패턴의 종류
-- 디자인패턴 조사(Prototype Pattern, )
+- 디자인패턴 조사(Prototype Pattern, Bridge Pattern)
 - 참조
 
 ---
@@ -135,9 +135,9 @@
 
 ---
 ## 디자인 패턴 조사
-### 1.(Prototype Pattern)
+### 1. (Prototype Pattern)
 
-### 2.
+### 2. (Bridge Pattern)
 
 ### 3.
 
@@ -145,6 +145,5 @@
 
 ---
 ## 참조
-[웹 개발자가 알아야할 7가지 디자인 패턴](https://sangcho.tistory.com/entry/%EC%9B%B9%EA%B0%9C%EB%B0%9C%EC%9E%90%EA%B0%80%EC%95%8C%EC%95%84%EC%95%BC%ED%95%A07%EA%B0%80%EC%A7%80%EB%94%94%EC%9E%90%EC%9D%B8%ED%8C%A8%ED%84%B4).  
-[golang design pattern](https://up-to-date-items.tistory.com/222?category=1023435).  
-[생성패턴 구조패턴 행위패턴](https://velog.io/@ha0kim/Design-Pattern-%EC%83%9D%EC%84%B1-%ED%8C%A8%ED%84%B4Creational-Patterns).  
+[웹 개발자가 알아야할 7가지 디자인 패턴](https://sangcho.tistory.com/entry/%EC%9B%B9%EA%B0%9C%EB%B0%9C%EC%9E%90%EA%B0%80%EC%95%8C%EC%95%84%EC%95%BC%ED%95%A07%EA%B0%80%EC%A7%80%EB%94%94%EC%9E%90%EC%9D%B8%ED%8C%A8%ED%84%B4)  
+[생성패턴 구조패턴 행위패턴](https://velog.io/@ha0kim/Design-Pattern-%EC%83%9D%EC%84%B1-%ED%8C%A8%ED%84%B4Creational-Patterns)    
