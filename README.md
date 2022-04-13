@@ -346,8 +346,6 @@ func NewResteraunt() *Restaurant {
 }
 
 // 피자만들기 구조체
-// the number of pizzas to make, as well as the
-// restaurant as its attributes
 type MakePizzaCommand struct {
 	n          int
 	restaurant *Restaurant
