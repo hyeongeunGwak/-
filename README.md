@@ -1,12 +1,12 @@
 # 디자인패턴
 
----
+===
 - 디자인패턴이란?
 - 디자인패턴의 종류
 - 디자인패턴 조사(Prototype Pattern, )
 - 참조
 
----
+===
 ## 디자인패턴이란?
 
 디자인 패턴이란 기존 환경 내에서 반복적으로 일어나는 문제들을 어떻게 풀어나갈 것인가에 대한 일종의 솔루션 같은 것입니다. 디자인 패턴 계의 교과서로 불리는 [GoF의 디자인패턴]에서는 객체지향적 디자인 패턴의 카테고리를 "**생성 패턴(Creational Pattern)**", "**구조 패턴(Structural Pattern)**", "**행동 패턴(Behavioral Pattern)**" 3가지로 구분하고 있습니다.
@@ -143,3 +143,8 @@
 
 ### 4.
 
+---
+## 참조
+[웹 개발자가 알아야할 7가지 디자인 패턴](https://sangcho.tistory.com/entry/%EC%9B%B9%EA%B0%9C%EB%B0%9C%EC%9E%90%EA%B0%80%EC%95%8C%EC%95%84%EC%95%BC%ED%95%A07%EA%B0%80%EC%A7%80%EB%94%94%EC%9E%90%EC%9D%B8%ED%8C%A8%ED%84%B4).  
+[golang design pattern] (https://up-to-date-items.tistory.com/222?category=1023435).
+[생성패턴 구조패턴 행위패턴](https://velog.io/@ha0kim/Design-Pattern-%EC%83%9D%EC%84%B1-%ED%8C%A8%ED%84%B4Creational-Patterns).  
